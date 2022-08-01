@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<head>
+    <title>
+        k-近傍法テスト
+    </title>
+</head>
+<body>
+<canvas id="canvas1"></canvas>
+
+<script type="module">
+
+import labeled_data from "./labeled_data.js";
+import k_NN from "./k-NN.js";
+
+const unknown_data = {
+    x:150,
+    y:150
+}
+
+const colors = ["blue", "lime", "orange", "yellow", "pink"];
+//Run---
+console.log("unknown data's label: " + colors[k_NN(labeled_data, unknown_data, 3)]);
+
+</script>
+</body>

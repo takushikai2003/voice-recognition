@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+</head>
+<body>
+<p>
+<button onclick="play();">再生</button>
+<button onclick="stop();">停止</button>
+</p>
+<table>
+	<tr>
+		<th>波形データ(p-f)</th>
+		<td><canvas id="canvas1" width="256" height="255" style="border:1px solid #ccc;"></canvas></td>
+	<!-- </tr>
+	<tr> -->
+		<th>スペクトル(p-f)</th>
+		<td><canvas id="canvas2" width="256" height="255" style="border:1px solid #ccc;"></canvas></td>
+	<!-- </tr>
+	<tr> -->
+	<th>フォルマント(f-t)</th>
+		<td><canvas id="canvas3" width="256" height="255" style="border:1px solid #ccc;"></canvas></td>
+	</tr>
+</table>
+
+フォルマント個数：
+<span id="formant_length"></span>
+
+<script src="./main.js"></script>
+</body>
+</html>
