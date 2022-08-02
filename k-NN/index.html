@@ -12,33 +12,33 @@
 import labeled_data from "./labeled_data.js";
 import k_NN from "./k-NN.js";
 
-// const unknown_data = {
-//     x:150,
-//     y:150
-// }
+const unknown_data = {
+    x:150,
+    y:150
+}
 
 const colors = ["blue", "lime", "orange", "yellow", "pink"];
 
-// console.log("unknown data's label: " + colors[k_NN(labeled_data, unknown_data, 3)]);
+console.log("unknown data's label: " + colors[k_NN(labeled_data, unknown_data, 3)]);
 
 
-const canvas1 = document.getElementById("canvas1");
-const ctx1 = canvas1.getContext("2d");
+// const canvas1 = document.getElementById("canvas1");
+// const ctx1 = canvas1.getContext("2d");
 
-//全点に対して色塗りしてみる
-for(let x=0; x<500; x++){
-    for(let y=0; y<500; y++){
-        const unknown_data = {x: x,y: y};
-        const color = colors[k_NN(labeled_data, unknown_data, 3)];
-        draw_point(x, y, color, 1);
-    }
-}
+// //全点に対して色塗りしてみる
+// for(let x=0; x<500; x++){
+//     for(let y=0; y<500; y++){
+//         const unknown_data = {x: x,y: y};
+//         const color = colors[k_NN(labeled_data, unknown_data, 3)];
+//         draw_point(x, y, color, 1);
+//     }
+// }
 
 
-function draw_point(x, y, color, size){
-    size = size || 3;
-    ctx1.fillStyle = color || "black";
-    ctx1.fillRect(x, y, size, size);
-}
+// function draw_point(x, y, color, size){
+//     size = size || 3;
+//     ctx1.fillStyle = color || "black";
+//     ctx1.fillRect(x, y, size, size);
+// }
 </script>
 </body>
