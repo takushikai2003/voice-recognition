@@ -17,39 +17,20 @@ let audioCtx;
 let audioSourceNode;
 let analyserNode;
 let data1,data2;
-let audioEle;
-let firstflg = true;
- 
-function play(){
+
+document.getElementById("start").addEventListener("click", async ()=>{
 	try{
-		if(firstflg){
-            // AudioContextの生成
-            audioCtx =  new AudioContext(); 
-            firstflg = false;  
-		}
 		
-		if(audioEle){
-		    audioEle.pause();
-		}
-		
-		audioEle = new Audio();    
-		
-		audioEle.src = "./こんにちは.mp3";
-		
-		
-		audioEle.autoplay = true;
-		audioEle.preload = "auto";
-		
-		// MediaElementAudioSourceNodeの生成
-		if(audioSourceNode){
-		    audioSourceNode.disconnect();
-		}
-		audioSourceNode = audioCtx.createMediaElementSource(audioEle);
+		// AudioContextの生成
+		audioCtx =  new AudioContext();
+		// マイクから音声を取得する
+		const stream = await navigator.mediaDevices.getUserMedia({audio: true});
+		audioSourceNode = audioCtx.createMediaStreamSource(stream);
 		
 		// AnalyserNodeの生成 
 		// ※音声の時間と周波数を解析する
 		if(analyserNode){
-		    analyserNode.disconnect();
+			analyserNode.disconnect();
 		}    
 		analyserNode = audioCtx.createAnalyser();
 		
@@ -61,16 +42,16 @@ function play(){
 	
 		// オーディオノードの設定
 		audioSourceNode.connect(analyserNode);
-		analyserNode.connect(audioCtx.destination);
+		// analyserNode.connect(audioCtx.destination);
 		
-        // ctx2.fillStyle = "gray";
-        // ctx2.fillRect(0,0, canvas2.width, canvas2.height);
+		// ctx2.fillStyle = "gray";
+		// ctx2.fillRect(0,0, canvas2.width, canvas2.height);
 		draw();  
 	}
 	catch(e){
 		alert(e);
 	}
-} 
+});
 
 
 let c3_pos_x = 0;
@@ -115,19 +96,9 @@ function draw() {
 
 	// Formant-------------------------------
 	// analyserNode.getByteFrequencyData(data2);
-
+	const formants = get_formant();
 	// 極大値だけ描画したい
-    const formants = [];
-	for(let i = 0; i < data2.length; i++) {
-        if(data2[i-1] < data2[i] && data2[i] >= data2[i+1]){
-            ctx3.fillStyle = "blue";
-            ctx3.fillRect(c3_pos_x, canvas3.height - i*3, 1, 3);
-
-            const Hz = i * 44100 / analyserNode.fftSize;
-            formants.push(Hz);
-        }
-       
-	}
+    
 
     // console.log(formants.length);
     document.getElementById("formant_length").innerHTML = formants.length;
@@ -143,7 +114,90 @@ function draw() {
 
     c3_pos_x++;
 };
- 
-function stop(){  
-  	audioEle.pause();
+
+
+function get_formant(){
+	const formants = [];
+	for(let i = 0; i < data2.length; i++) {
+        if(data2[i-1] < data2[i] && data2[i] >= data2[i+1]){
+            ctx3.fillStyle = "blue";
+            ctx3.fillRect(c3_pos_x, canvas3.height - i*3, 1, 3);
+
+            const Hz = i * 44100 / analyserNode.fftSize;
+            formants.push(Hz);
+        }  
+	}
+
+
+	return formants;
+}
+
+
+//スペースキーが押されているときだけformant記録-----------
+let keydown = false;
+document.documentElement.addEventListener("keydown",(e)=>{
+	if(e.key==" "){
+		keydown = true;
+	}
+});
+
+document.documentElement.addEventListener("keyup",(e)=>{
+	if(e.key==" "){
+		keydown = false;
+	}
+});
+
+const labeled_data = [];
+
+setInterval(() => {
+	//キャプチャ
+	if(keydown){
+		let label;
+
+		switch(true){
+			case document.getElementById("radio1").checked:
+				label = 0;
+				break;
+			case document.getElementById("radio2").checked:
+				label = 1;
+				break;
+			case document.getElementById("radio3").checked:
+				label = 2;
+				break;
+			case document.getElementById("radio4").checked:
+				label = 3;
+				break;
+			case document.getElementById("radio5").checked:
+				label = 4;
+				break;
+		}
+
+		const formants = get_formant();
+		const formant1 = formants[0];
+		const formant2 = formants[1];
+
+		const data = {x: formant1, y:formant2, label: label};
+
+		//formant1,2にどちらも値が存在すれば
+		if(formant1!=undefined && formant2!=undefined){
+			labeled_data.push(data);
+		}
+	}
+}, 10);
+
+
+//終了------------
+document.getElementById("finish").addEventListener("click",()=>{
+	console.log(labeled_data);
+	download(JSON.stringify(labeled_data));
+});
+
+function download(text) {
+	const blob = new Blob([text], { type: "text/plain" });
+	const a = document.createElement("a");
+	a.href = URL.createObjectURL(blob);
+	a.download = "labeled_data.txt";
+	a.click();
+	URL.revokeObjectURL(a.href);
+	a.remove();
 }

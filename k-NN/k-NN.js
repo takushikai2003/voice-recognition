@@ -8,19 +8,24 @@
 
 const canvas1 = document.getElementById("canvas1");
 const ctx1 = canvas1.getContext("2d");
+
+//原点を左下に移動
 canvas1.width = 500;
 canvas1.height = 500;
 
+ctx1.translate(0, canvas1.height);
+ctx1.scale(1, -1);
 
 function k_NN(labeled_data, unknown_data, k){
     //とりあえず5色
     const colors = ["blue", "lime", "orange", "yellow", "pink"];
     
+    const scale = 0.1; 
     //データを描画
     for(let i=0; i<labeled_data.length; i++){
-        draw_point(labeled_data[i].x, labeled_data[i].y, colors[labeled_data[i].label], 5);
+        draw_point(labeled_data[i].x*scale, labeled_data[i].y*scale, colors[labeled_data[i].label], 5);
     }
-    draw_point(unknown_data.x, unknown_data.y, "red", 10);
+    // draw_point(unknown_data.x, unknown_data.y, "red", 10);
 
 
     //unknown_dataに近い点をk個探す----
