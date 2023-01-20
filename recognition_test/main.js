@@ -62,7 +62,7 @@ document.getElementById("start").addEventListener("click", async ()=>{
             const formants = get_formant(audio_data);
             const formant1 = formants[0];
             const formant2 = formants[1];
-            const unknown_data = {x: formant1, y:formant2};
+            const unknown_data = {x: formant1, y: formant2};
 
             const label = k_NN(labeled_data, unknown_data, 3);
 
